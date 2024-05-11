@@ -1,6 +1,7 @@
 const mongoose = require('mongoose');
-
-mongoose.connect('mongodb://127.0.0.1:27017/taskDb').then(()=>{
+const env = require('dotenv').config();
+const MONGODB_URI = process.env.MONGODB_URI;
+mongoose.connect(MONGODB_URI).then(()=>{
     console.log(`Connected to DB succesfully`);
 }).catch((err)=>{
     console.error(err);
