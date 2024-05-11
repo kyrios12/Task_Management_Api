@@ -2,7 +2,6 @@ const express = require('express');
 const router = require('./routes/route');
 const env = require('dotenv').config();
 const port = 8080;
-
 const app = express();
 
 
@@ -19,6 +18,8 @@ app.listen(port,(err)=>{
     if(err){
         console.error(err);
     }else{
-        console.log(`Server is running on port ${port}`);
+        console.log(`Server running on port ${port}`)
     }
 })
+
+module.exports = app;
