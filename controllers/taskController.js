@@ -9,7 +9,12 @@ module.exports.addTask = async (req, res) => {
         res
           .status(400)
           .json({ message: "Title and Description cannot be empty" });
-      } else {
+      }
+      let taskExist = await Task.findOne({title:title});
+      if(taskExist){
+         res.status(403).json({"message":"Task already exists please update existing task"})
+      } 
+      else {
         let addedTask = await Task.create({
           title: title,
           description: description,
@@ -27,6 +32,24 @@ module.exports.addTask = async (req, res) => {
     }
   };
 
+// module.exports.addTask = function(req,res){
+//    let{title,description,status} = req.body;
+//    if(!title || !description || !status){
+//     res.status(400).json({"message":"Input cannot be empty"})
+//    }
+
+//    Task.create({
+//     title,
+//     description,
+//     status
+//    }).then((task)=>{
+//      res.status(200).json({"message":task})
+//    }).catch((err)=>{
+//     console.error(err);
+//     res.status(500).json({"message":"Internal Server Error"})
+//    })
+// }
+
 module.exports.fetchTasks = async (req, res) => {
     try {
       let tasks = await Task.find();
@@ -36,6 +59,14 @@ module.exports.fetchTasks = async (req, res) => {
       res.status(500).json({ message: "error" });
     }
 }
+// module.exports.fetchTasks = function (req,res){
+//    Task.find().then((tasks)=>{
+//       res.status(200).json({"message":tasks});
+//    }).catch((err)=>{
+//       console.error(err);
+//       res.status(500).json({"message":"Internal Server Error"})
+//    })
+// }
 
 module.exports.fetchTask = async (req, res) => {
     try {
@@ -56,6 +87,23 @@ module.exports.fetchTask = async (req, res) => {
       res.status(500).json({ message: "Cannot fetch the task" });
     }
   }
+
+// module.exports.fetchTask = function(req,res){
+//   let _id = req.params.id;
+//   if(!mongoose.Types.ObjectId.isValid(_id)){
+//     res.status(404).json({"message":"Invalid Id"})
+//   }
+  
+//   Task.findById(_id).then((task)=>{
+//     if(!task){
+//       res.status(400).json({"message":"Task does not exist"})
+//     }
+//     res.status(200).json({"message":task})
+//   }).catch((err)=>{
+//     console.error(err);
+//     res.status(500).json({"message":"Internal Server Error"})
+//   })
+// }
 
 module.exports.updateTask = async (req, res) => {
     try {
@@ -101,6 +149,34 @@ module.exports.updateTask = async (req, res) => {
     }
 }
 
+// module.exports.updateTask = function(req,res){
+//     let _id = req.params.id;
+        // if(!mongoose.Types.ObjectId.isValid(_id)){
+        //   res.status(400).json({"message":"Invalid Id"})
+        // }
+//     Task.findById(_id).then((task)=>{
+//       if(!task){
+//         res.status(400).json({"message":"Task does not exist"})
+//       }
+//       let {title,description,status} = req.body;
+//       if(title && title != null){
+//         task.title = title;
+//       }
+//       if(description && description != null){
+//         task.description = description;
+//       }
+//       if(status && status != null){
+//         task.status = status;
+//       }
+//       task.save().then(()=>{
+//         res.status(200).json({"message":task})
+//       })
+//     }).catch((err)=>{
+//       console.error(err);
+//       res.status(500).json({"message":"Internal Server Error"})
+//     })
+// }
+
 module.exports.deleteTask = async (req, res) => {
     try {
       let _id = req.params.id;
@@ -122,3 +198,16 @@ module.exports.deleteTask = async (req, res) => {
       });
     }
   }
+
+// module.exports.deleteTask = function(req,res){
+//    let _id = req.params.id;
+//    if(!mongoose.Types.ObjectId.isValid(_id)){
+//     res.status(400).json({"message":"Invalid Id"})
+//    }
+//    Task.findByIdAndDelete(_id).then(()=>{
+//     res.status(200).json({"message":"Successfully Deleted"})
+//    }).catch((err)=>{
+//     console.error(err);
+//     res.status(500).json({"message":"Internal Server Error"})
+//    })
+// }
