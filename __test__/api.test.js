@@ -1,21 +1,31 @@
 const request = require('supertest');
-const app = require('./index');
-const Task = require('./models/taskDb');
+const app = require('../app');
 const mongoose = require('mongoose');
 const { MONGODB_URI } = process.env;
 
-describe('Database Connection', () => {
-    it('should connect to the database successfully', async () => {
-      try {
-        await mongoose.connect(MONGODB_URI);
-  
-        expect(mongoose.connection.readyState).toBe(1);
-      } catch (error) {
+beforeAll(async () => {
+    try {
+        await mongoose.connect(MONGODB_URI, { useNewUrlParser: true, useUnifiedTopology: true });
+    } catch (error) {
+        console.error('Error connecting to MongoDB:', error);
+    }
+});
 
-        throw new Error('Failed to connect to the database');
-      }
-    });
-  });
+afterAll(async () => {
+    try {
+        await mongoose.disconnect();
+    } catch (error) {
+        console.error('Error disconnecting from MongoDB:', error);
+    }
+});
+
+test("Database connected successfully", async () => {
+    // Ensure the connection promise resolves successfully
+    await expect(mongoose.connect(MONGODB_URI, { useNewUrlParser: true, useUnifiedTopology: true }))
+        .resolves
+        .not
+        .toThrow();
+});
 
 describe('Task Management API', () => {
     let taskId;

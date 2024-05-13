@@ -190,7 +190,7 @@ module.exports.deleteTask = async (req, res) => {
       } else {
         let deleteTask = await Task.findByIdAndDelete(_id);
       }
-      res.status(204).json({ message: "Task Deleted Successfully" });
+      res.status(200).json({ message: "Task Deleted Successfully" });
     } catch (error) {
       console.error("Error updating task:", error);
       res.status(500).json({
