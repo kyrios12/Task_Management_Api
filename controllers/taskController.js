@@ -8,11 +8,13 @@ module.exports.addTask = async (req, res) => {
       if (!title || !description || !status) {
         res
           .status(400)
-          .json({ message: "Title and Description cannot be empty" });
+          .json({ message: "Title or Description or Status cannot be empty" });
+          return;
       }
       let taskExist = await Task.findOne({title:title});
       if(taskExist){
          res.status(403).json({"message":"Task already exists please update existing task"})
+         return;
       } 
       else {
         let addedTask = await Task.create({
@@ -23,12 +25,14 @@ module.exports.addTask = async (req, res) => {
         res
           .status(200)
           .json({ message: "Task added successfully", task: addedTask });
+          return;
       }
     } catch (error) {
       console.error("Error adding task:", error);
       res
         .status(500)
         .json({ message: "Task could not be added. Please try again later." });
+      return;
     }
   };
 
@@ -54,9 +58,11 @@ module.exports.fetchTasks = async (req, res) => {
     try {
       let tasks = await Task.find();
       res.status(200).json({ message: tasks });
+      return;
     } catch (error) {
       console.error("Error Fetching tasks:", error);
       res.status(500).json({ message: "error" });
+      return;
     }
 }
 // module.exports.fetchTasks = function (req,res){
@@ -80,11 +86,14 @@ module.exports.fetchTask = async (req, res) => {
       let task = await Task.findById(_id);
       if (!task) {
         res.status(404).json({ message: "There is no such task" });
+        return;
       }
       res.status(200).json({ message: task });
+      return;
     } catch (error) {
       console.error(error);
       res.status(500).json({ message: "Cannot fetch the task" });
+      return;
     }
   }
 
@@ -140,12 +149,13 @@ module.exports.updateTask = async (req, res) => {
       await task.save();
   
       // Return a success message along with the updated task
-      res.status(200).json({ message: "Task updated successfully", task: task });
+      return res.status(200).json({ message: "Task updated successfully", task: task });
     } catch (error) {
       console.error("Error updating task:", error);
       res.status(500).json({
         message: "Internal server error occurred while updating the task",
       });
+      return;
     }
 }
 
@@ -190,12 +200,13 @@ module.exports.deleteTask = async (req, res) => {
       } else {
         let deleteTask = await Task.findByIdAndDelete(_id);
       }
-      res.status(200).json({ message: "Task Deleted Successfully" });
+      return res.status(200).json({ message: "Task Deleted Successfully" });
     } catch (error) {
       console.error("Error updating task:", error);
       res.status(500).json({
         message: "Internal server error occurred while updating the task",
       });
+      return;
     }
   }
 
